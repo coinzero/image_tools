@@ -1,0 +1,143 @@
+[package]
+name = "image_tools"
+version = "0.3.1"
+edition = "2018"
+
+[workspace]
+members = [
+    "sub_crates/egui_custom",
+    "sub_crates/hdr",
+    "sub_crates/image_fmt",
+    "sub_crates/job_queue",
+    "sub_crates/ocio_gen",
+    "sub_crates/sensor_analysis",
+    "sub_crates/shared_data",
+]
+
+# Define our binary source locations.
+[[bin]]
+name="lut_maker"
+path="src/bin/lut_maker/main.rs"
+
+[[bin]]
+name="ocio_maker"
+path="src/bin/ocio_maker/main.rs"
+
+[[bin]]
+name="hdri_merge"
+path="src/bin/hdri_merge/main.rs"
+
+# Builds a release executable, but with debug info.
+[profile.release-debug]
+inherits = "release"
+debug = true
+debug-assertions = true
+
+# Appimage config.
+[package.metadata.appimage]
+auto_link = true
+auto_link_exclude_list = [
+    # Core libs.
+    "ld-linux-*.so.*",
+    "libc.so*",
+    "libdl.so*",
+    "libpthread.so*",
+    "librt.so*",
+    "libresolv.so*",
+    "libm.so*",
+
+    # X11/Wayland stuff.
+    "libGL.so*",
+    "libEGL.so*",
+    "libGLX.so*",
+    "libGLdispatch.so*",
+    "libwayland*.so.*",
+    "libX11.so*",
+    "libXau.so*",
+    "libXcomposite.so*",
+    "libXcursor.so*",
+    "libXdmcp.so*",
+    "libXext.so*",
+    "libXfixes.so*",
+    "libXinerama.so*",
+    "libXdamage.so*",
+    "libXi.so*",
+    "libXrandr.so*",
+    "libXrender.so*",
+    "libxkbcommon.so*",
+    "libxcb.so*",
+    "libxcb-*.so.*",
+
+    # GTK3/Gnome stuff.
+    "libgtk-*",
+    "libglib-*",
+    "libgdk-*",
+    "libgdk_*",
+    "libgobject-*",
+    "libgmodule-*",
+    "libatk-*",
+    "libgio-*",
+    "libcairo-*",
+    "libpango-*",
+    "libpangocairo-*",
+    "libpangoft2-*",
+
+    # Other stuff that GTK3 pulls in,
+    # and which are especially large.
+    "libepoxy.so*",
+    "libgcrypt.so",
+    "libharfbuzz.so*",
+    "libfreetype.so*",
+    "libsystemd.so*",
+    "libpixman-*",
+    "libpcre*",
+
+    # And yet other stuff that GTK3
+    # pulls in, and which just seems
+    # weird to include.
+    "libgpg-*",
+    "libmount.so*",
+    "libblkid.so*",
+    "libdbus-*",
+    "libatspi.so*",
+    "libselinux.so*",
+]
+
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[dependencies]
+# eframe = "0.18"
+eframe = { git = "https://github.com/cessen/egui", branch = "plot_fix" }
+
+rfd = { version = "0.9.0", default-features=false, features = ["xdg-portal"] }
+# image = "0.24"
+rawloader = "0.37"
+kamadak-exif = "0.5"
+clap = "2"
+rayon = "1"
+pathdiff = { version = "0.2", features = [] }
+colorbox = { git = "https://github.com/cessen/colorbox", branch = "master" }
+# colorbox = { path = "../colorbox" }
+
+[dependencies.egui_custom]
+path = "sub_crates/egui_custom"
+
+[dependencies.hdr]
+path = "sub_crates/hdr"
+
+[dependencies.image_fmt]
+path = "sub_crates/image_fmt"
+
+[dependencies.job_queue]
+path = "sub_crates/job_queue"
+
+[dependencies.ocio_gen]
+path = "sub_crates/ocio_gen"
+
+[dependencies.sensor_analysis]
+path = "sub_crates/sensor_analysis"
+
+[dependencies.shared_data]
+path = "sub_crates/shared_data"
